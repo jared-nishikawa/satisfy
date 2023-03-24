@@ -4,6 +4,17 @@ class UnknownItemError(BaseException):
     pass
 
 
+machines = {
+        "constructor": 4,
+        "assembler": 15,
+        "manufacturer": 55,
+        "foundry": 16,
+        "smelter": 4,
+        "miner1": 5,
+        "miner2": 12,
+        }
+
+
 raw = {"iron_ore", "coal", "copper_ore", "limestone"}
 recipes = {
         "smart_plating": ({"reinforced_plate": 2, "rotor": 2}, 2, "assembler"),
@@ -37,7 +48,6 @@ class Node:
 
 class Graph:
     def __init__(self):
-        self.raw = raw
         self.nodes = {}
         for name, recipe in recipes.items():
             n = Node(name, recipe[0], recipe[1], recipe[2])
@@ -47,28 +57,23 @@ class Graph:
         print(f"computing costs for {item} at {qty} units/min")
         total_raw = {}
         intermed = {}
-        constructors = 0
-        assemblers = 0
-        foundries = 0
+        total_machines = {}
         stack = [(item, qty, 0)]
         while stack:
             name, q, depth = stack.pop()
-            if name in self.raw:
+            if name in raw:
                 if verbose:
                     print("    "*depth + f"{name}: {q}")
             else:
                 n = self.nodes[name]
                 rate = n.value
                 machine = n.machine
-                if machine == "constructor":
-                    constructors += q/rate
-                elif machine == "assembler":
-                    assemblers += q/rate
-                elif machine == "foundry":
-                    foundries += q/rate
+                if machine not in total_machines:
+                    total_machines[machine] = 0
+                total_machines[machine] += q/rate
                 if verbose:
                     print("    "*depth + f"{name}: {q} ({q/rate} {machine})")
-            if name in self.raw:
+            if name in raw:
                 if name not in total_raw:
                     total_raw[name] = 0
                 total_raw[name] += q
@@ -87,9 +92,23 @@ class Graph:
         print(total_raw)
         print("total intermediate products")
         print(intermed)
-        print("constructors:", constructors)
-        print("assemblers:", assemblers)
-        print("foundries:", foundries)
+        power = 0
+        for mach, num in total_machines.items():
+            print(f"{mach}: {num}")
+            power += machines[mach] * num
+        total_ore = 0
+        for _, num in total_raw.items():
+            total_ore += num
+        ms = []
+        for (purity, rate) in (("pure", 240), ("normal", 120), ("impure", 60)):
+            num = total_ore/rate
+            p = machines["miner2"]
+            ms.append(p*num)
+            print(f"miners mk2 on {purity} nodes: {num} (power: {p*num})")
+        print(f"power: {power+ms[2]} mw (only impure nodes)")
+        print(f"power: {power+ms[1]} mw (only normal nodes)")
+        print(f"power: {power+ms[0]} mw (only pure nodes)")
+        print(f"power: {power} mw (doesn't include miners)")
         print("-"*30)
 
 # enter item and qty(/min) needed
