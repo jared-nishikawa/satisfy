@@ -15,7 +15,8 @@ machines = {
         }
 
 
-raw = {"iron_ore", "coal", "copper_ore", "limestone"}
+ore = {"iron_ore", "coal", "copper_ore", "limestone"}
+base = {"plastic", "rubber"}
 recipes = {
         "smart_plating": ({"reinforced_plate": 2, "rotor": 2}, 2, "assembler"),
         "reinforced_plate": ({"iron_plate": 30, "screw": 60}, 5, "assembler"),
@@ -33,10 +34,13 @@ recipes = {
         "steel_pipe": ({"steel_ingot": 30}, 20, "constructor"),
         "wire": ({"copper_ingot": 15}, 30, "constructor"),
         "copper_ingot": ({"copper_ore": 30}, 30, "smelter"),
+        "cable": ({"wire": 60}, 60, "constructor"),
         "copper_sheet": ({"copper_ingot": 20}, 10, "constructor"),
         "heavy_modular_frame": ({"modular_frame": 10, "steel_pipe": 30, "encased_beam": 10, "screw": 200}, 2, "manufacturer"),
         "encased_beam": ({"steel_beam": 24, "concrete": 30}, 6, "assembler"),
         "concrete": ({"limestone": 45}, 15, "constructor"),
+        "computer": ({"circuit_board": 25, "cable": 22.5, "plastic": 45, "screw": 130}, 2.5, "manufacturer"),
+        "circuit_board": ({"copper_sheet": 15, "plastic": 30}, 7.5, "assembler"),
         }
 
 class Node:
@@ -55,13 +59,16 @@ class Graph:
 
     def visit(self, item, qty, verbose=False):
         print(f"computing costs for {item} at {qty} units/min")
-        total_raw = {}
+        total_ore = {}
         intermed = {}
         total_machines = {}
         stack = [(item, qty, 0)]
         while stack:
             name, q, depth = stack.pop()
-            if name in raw:
+            if name in ore:
+                if verbose:
+                    print("    "*depth + f"{name}: {q}")
+            elif name in base:
                 if verbose:
                     print("    "*depth + f"{name}: {q}")
             else:
@@ -73,10 +80,12 @@ class Graph:
                 total_machines[machine] += q/rate
                 if verbose:
                     print("    "*depth + f"{name}: {q} ({q/rate} {machine})")
-            if name in raw:
-                if name not in total_raw:
-                    total_raw[name] = 0
-                total_raw[name] += q
+            if name in ore:
+                if name not in total_ore:
+                    total_ore[name] = 0
+                total_ore[name] += q
+                continue
+            elif name in base:
                 continue
             else:
                 if name not in intermed:
@@ -88,20 +97,20 @@ class Graph:
             rate = node.value
             for ingredient, num in node.edges.items():
                 stack.append((ingredient, num*q/rate, depth+1))
-        print("total raw products")
-        print(total_raw)
+        print("total ore")
+        print(total_ore)
         print("total intermediate products")
         print(intermed)
         power = 0
         for mach, num in total_machines.items():
             print(f"{mach}: {num}")
             power += machines[mach] * num
-        total_ore = 0
-        for _, num in total_raw.items():
-            total_ore += num
+        t_ore = 0
+        for _, num in total_ore.items():
+            t_ore += num
         ms = []
         for (purity, rate) in (("pure", 240), ("normal", 120), ("impure", 60)):
-            num = total_ore/rate
+            num = t_ore/rate
             p = machines["miner2"]
             ms.append(p*num)
             print(f"miners mk2 on {purity} nodes: {num} (power: {p*num})")
@@ -118,5 +127,10 @@ if __name__ == '__main__':
     #g.visit("versatile_framework", 16, verbose=True)
     #g.visit("smart_plating", 10, verbose=True)
     #g.visit("motor", 15, verbose=True)
-    g.visit("heavy_modular_frame", 5, verbose=True)
+    #g.visit("heavy_modular_frame", 5, verbose=True)
+    #g.visit("screw", 500, verbose=True)
+    #g.visit("encased_beam", 25, verbose=True)
+    #g.visit("steel_pipe", 75, verbose=True)
+    #g.visit("modular_frame", 25, verbose=True)
+    g.visit("computer", 2.5, verbose=True)
 
