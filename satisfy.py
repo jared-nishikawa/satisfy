@@ -1,3 +1,5 @@
+import sys
+
 # all units are x per minute
 
 class UnknownItemError(BaseException):
@@ -122,8 +124,16 @@ class Graph:
 
 # enter item and qty(/min) needed
 if __name__ == '__main__':
-    # initialize graph
+    if not sys.argv[1:]:
+        sys.exit(f"{sys.argv[0]} [item] [per/min]")
     g = Graph()
+    item = sys.argv[1]
+    if not sys.argv[2:]:
+        rate = recipes[item][1]
+    else:
+        rate = float(sys.argv[2])
+
+    # initialize graph
     #g.visit("versatile_framework", 16, verbose=True)
     #g.visit("smart_plating", 10, verbose=True)
     #g.visit("motor", 15, verbose=True)
@@ -132,5 +142,7 @@ if __name__ == '__main__':
     #g.visit("encased_beam", 25, verbose=True)
     #g.visit("steel_pipe", 75, verbose=True)
     #g.visit("modular_frame", 25, verbose=True)
-    g.visit("computer", 2.5, verbose=True)
+    #g.visit("computer", 2.5, verbose=True)
+
+    g.visit(item, rate, verbose=True)
 
