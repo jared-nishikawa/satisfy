@@ -15,7 +15,7 @@ machines = {
         }
 
 
-ore = {"iron_ore", "coal", "copper_ore", "limestone"}
+ore = {"iron_ore", "coal", "copper_ore", "limestone", "raw_quartz"}
 base = {"plastic", "rubber"}
 recipes = {
         "smart_plating": ({"reinforced_plate": 2, "rotor": 2}, 2, "assembler"),
@@ -41,6 +41,9 @@ recipes = {
         "concrete": ({"limestone": 45}, 15, "constructor"),
         "computer": ({"circuit_board": 25, "cable": 22.5, "plastic": 45, "screw": 130}, 2.5, "manufacturer"),
         "circuit_board": ({"copper_sheet": 15, "plastic": 30}, 7.5, "assembler"),
+        "quartz_crystal": ({"raw_quartz": 37.5}, 22.5, "constructor"),
+        "silica": ({"raw_quartz": 22.5}, 37.5, "constructor"),
+        "crystal_oscillator": ({"quartz_crystal": 18, "cable": 14, "reinforced_plate": 2.5}, 1, "manufacturer"),
         }
 
 class Node:
@@ -127,7 +130,7 @@ if __name__ == '__main__':
     #g.visit("versatile_framework", 16, verbose=True)
     #g.visit("smart_plating", 10, verbose=True)
     #g.visit("motor", 15, verbose=True)
-    #g.visit("heavy_modular_frame", 5, verbose=True)
+    g.visit("heavy_modular_frame", 2, verbose=True)
     #g.visit("screw", 500, verbose=True)
     #g.visit("encased_beam", 25, verbose=True)
     #g.visit("steel_pipe", 75, verbose=True)
