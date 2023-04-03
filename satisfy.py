@@ -140,7 +140,7 @@ if __name__ == '__main__':
     #g.visit("versatile_framework", 16, verbose=True)
     #g.visit("smart_plating", 10, verbose=True)
     #g.visit("motor", 15, verbose=True)
-    g.visit("heavy_modular_frame", 2, verbose=True)
+    #g.visit("heavy_modular_frame", 2, verbose=True)
     #g.visit("screw", 500, verbose=True)
     #g.visit("encased_beam", 25, verbose=True)
     #g.visit("steel_pipe", 75, verbose=True)
