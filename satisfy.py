@@ -36,7 +36,7 @@ recipes = {
         "steel_pipe": ({"steel_ingot": 30}, 20, "constructor"),
         "wire": ({"copper_ingot": 15}, 30, "constructor"),
         "copper_ingot": ({"copper_ore": 30}, 30, "smelter"),
-        "cable": ({"wire": 60}, 60, "constructor"),
+        "cable": ({"wire": 60}, 30, "constructor"),
         "copper_sheet": ({"copper_ingot": 20}, 10, "constructor"),
         "heavy_modular_frame": ({"modular_frame": 10, "steel_pipe": 30, "encased_beam": 10, "screw": 200}, 2, "manufacturer"),
         "encased_beam": ({"steel_beam": 24, "concrete": 30}, 6, "assembler"),
