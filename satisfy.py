@@ -14,11 +14,14 @@ machines = {
         "smelter": 4,
         "miner1": 5,
         "miner2": 12,
+        "refinery": 30,
+        "blender": 75,
+        "particle_accelerator": 1000,
         }
 
 
-ore = {"iron_ore", "coal", "copper_ore", "limestone", "raw_quartz"}
-base = {"plastic", "rubber"}
+ore = {"iron_ore", "coal", "copper_ore", "limestone", "raw_quartz", "bauxite", "caterium_ore", "sulfur"}
+base = {"plastic", "rubber", "water", "nitrogen_gas"}
 recipes = {
         "smart_plating": ({"reinforced_plate": 2, "rotor": 2}, 2, "assembler"),
         "reinforced_plate": ({"iron_plate": 30, "screw": 60}, 5, "assembler"),
@@ -49,6 +52,38 @@ recipes = {
         "quartz_crystal": ({"raw_quartz": 37.5}, 22.5, "constructor"),
         "silica": ({"raw_quartz": 22.5}, 37.5, "constructor"),
         "crystal_oscillator": ({"quartz_crystal": 18, "cable": 14, "reinforced_plate": 2.5}, 1, "manufacturer"),
+
+        "caterium_ingot": ({"caterium_ore": 45}, 15, "smelter"),
+        "quickwire": ({"caterium_ingot": 12}, 60, "constructor"),
+        "ai_limiter": ({"copper_sheet": 25, "quickwire": 100}, 5, "assembler"),
+        "electromagnetic_control_rod": ({"stator": 6, "ai_limiter": 4}, 4, "assembler"),
+
+        "sulfuric_acid": ({"sulfur": 50, "water": 50}, 50, "refinery"),
+        "battery": ({"sulfuric_acid": 50, "alumina_solution": 40, "aluminum_casing": 20}, 20, "blender"),
+        "copper_powder": ({"copper_ingot": 300}, 50, "constructor"),
+
+        "alumina_solution": ({"bauxite": 12, "water": 180}, 120, "refinery"),
+        "aluminum_scrap": ({"alumina_solution": 240, "coal": 120}, 360, "refinery"),
+        "aluminum_ingot": ({"aluminum_scrap": 90, "silica": 75}, 60, "foundry"),
+        "aluminum_casing": ({"aluminum_ingot": 90}, 60, "constructor"),
+        "fused_modular_frame": ({"heavy_modular_frame": 1.5, "aluminum_casing": 75, "nitrogen_gas": 37.5}, 1.5, "blender"),
+        "radio_control_unit": ({"aluminum_casing": 40, "crystal_oscillator": 1.25, "computer": 1.25}, 2.5, "manufacturer"),
+        "pressure_conversion_cube": ({"fused_modular_frame": 1, "radio_control_unit": 2}, 1, "assembler"),
+
+        "high_speed_connector": ({"quickwire": 210, "cable": 37.5, "circuit_board": 3.75}, 3.75, "manufacturer"),
+        "supercomputer": ({"computer": 3.75, "ai_limiter": 3.75, "high_speed_connector": 5.625, "plastic": 52.5}, 1.875, "manufacturer"),
+
+        "alclad_aluminum_sheet": ({"aluminum_ingot": 30, "copper_ingot": 10}, 30, "assembler"),
+        "heat_sink": ({"alclad_aluminum_sheet": 37.5, "copper_sheet": 22.5}, 7.5, "assembler"),
+
+        "cooling_system": ({"heat_sink": 12, "rubber": 12, "water": 30, "nitrogen_gas": 150}, 6, "blender"),
+        "modular_engine": ({"motor": 2, "rubber": 15, "smart_plating": 2}, 1, "manufacturer"),
+        "turbo_motor": ({"cooling_system": 7.5, "radio_control_unit": 3.75, "motor": 7.5, "rubber": 45}, 1.875, "manufacturer"),
+
+        "assembly_director_system": ({"adaptive_control_unit": 1.5, "supercomputer": 0.75}, 0.75, "assembler"),
+        "magnetic_field_generator": ({"versatile_framework": 2.5, "battery": 5, "electromagnetic_control_rod": 1}, 1, "manufacturer"),
+        "nuclear_pasta": ({"copper_powder": 100, "pressure_conversion_cube": 0.5}, 0.5, "particle_accelerator"),
+        "thermal_propulsion_rocket": ({"modular_engine": 2.5, "turbo_motor": 1, "cooling_system": 3, "fused_modular_frame": 1}, 1, "manufacturer"),
         }
 
 class Node:
@@ -131,7 +166,7 @@ class Graph:
 # enter item and qty(/min) needed
 if __name__ == '__main__':
     if not sys.argv[1:]:
-        sys.exit(f"{sys.argv[0]} [item] [per/min]")
+        sys.exit(f"{sys.argv[0]} [item] [per/min=1]")
     g = Graph()
     item = sys.argv[1]
     if not sys.argv[2:]:
